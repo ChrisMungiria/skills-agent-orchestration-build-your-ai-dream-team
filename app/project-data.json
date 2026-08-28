@@ -1,0 +1,44 @@
+{
+  "projects": [
+    {
+      "name": "Contributor Onboarding",
+      "owner": "Amina Okafor",
+      "status": "Active",
+      "recentActivity": "Published the first-time contributor checklist and scheduled a feedback review for Friday.",
+      "priority": "High",
+      "summary": "Making the path from first issue to first pull request easier to follow."
+    },
+    {
+      "name": "API Documentation Refresh",
+      "owner": "Leo Martinez",
+      "status": "At risk",
+      "recentActivity": "Three endpoint guides are drafted; the authentication examples still need a maintainer review.",
+      "priority": "High",
+      "summary": "Bringing examples and reference pages in line with the latest API release."
+    },
+    {
+      "name": "Design System Foundations",
+      "owner": "Priya Shah",
+      "status": "Active",
+      "recentActivity": "Added accessible form states and opened a component audit for contributor feedback.",
+      "priority": "Medium",
+      "summary": "Creating reusable, inclusive UI patterns for the team's shared tools."
+    },
+    {
+      "name": "Community Showcase",
+      "owner": "Noah Williams",
+      "status": "Complete",
+      "recentActivity": "The spring showcase is live; the retrospective notes are ready for the next planning cycle.",
+      "priority": "Low",
+      "summary": "Celebrating the projects and people making an impact across the community."
+    },
+    {
+      "name": "Issue Triage Automation",
+      "owner": "Sofia Chen",
+      "status": "Blocked",
+      "recentActivity": "Waiting on repository label permissions before the automation can move into its pilot.",
+      "priority": "Medium",
+      "summary": "Reducing repetitive triage work so maintainers can focus on high-value conversations."
+    }
+  ]
+}

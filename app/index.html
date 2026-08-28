@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="A contributor-focused overview of Mona's team projects.">
+    <title>Project Pulse</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="header-inner">
+        <p class="eyebrow">Mona's team workspace</p>
+        <h1>Project Pulse</h1>
+        <p class="intro">A clear view of what the team is moving forward, where contributors can help, and what needs attention next.</p>
+      </div>
+    </header>
+
+    <main class="dashboard">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Contributor view</p>
+          <h2>Projects at a glance</h2>
+        </div>
+        <p id="project-count" class="project-count" aria-live="polite"></p>
+      </div>
+
+      <section id="project-grid" class="project-grid" aria-labelledby="projects-heading">
+        <h2 id="projects-heading" class="visually-hidden">Project cards</h2>
+        <p class="loading-state">Loading project data…</p>
+      </section>
+    </main>
+
+    <template id="project-card-template">
+      <article class="project-card">
+        <div class="card-topline">
+          <span class="status-badge"></span>
+          <span class="priority-label"></span>
+        </div>
+        <h3></h3>
+        <p class="summary"></p>
+        <dl class="project-meta">
+          <div>
+            <dt>Owner</dt>
+            <dd class="owner"></dd>
+          </div>
+        </dl>
+        <div class="activity">
+          <h4>Recent activity</h4>
+          <p class="recent-activity"></p>
+        </div>
+      </article>
+    </template>
+
+    <script>
+      const grid = document.querySelector("#project-grid");
+      const projectCount = document.querySelector("#project-count");
+      const cardTemplate = document.querySelector("#project-card-template");
+      const allowedStatuses = ["Active", "At risk", "Blocked", "Complete"];
+      const allowedPriorities = ["High", "Medium", "Low"];
+
+      function showState(message, className) {
+        grid.replaceChildren();
+        const state = document.createElement("p");
+        state.className = className;
+        state.textContent = message;
+        grid.append(state);
+        projectCount.textContent = "";
+      }
+
+      function renderProjects(data) {
+        if (!data || !Array.isArray(data.projects)) {
+          throw new Error("Project data must contain a projects array.");
+        }
+
+        if (data.projects.length === 0) {
+          showState("No projects are available yet.", "empty-state");
+          return;
+        }
+
+        const cards = data.projects.map((project) => {
+          const requiredFields = ["name", "owner", "status", "recentActivity", "priority"];
+          if (requiredFields.some((field) => typeof project[field] !== "string" || !project[field].trim())) {
+            throw new Error("A project is missing one or more required fields.");
+          }
+
+          const card = cardTemplate.content.cloneNode(true);
+          const article = card.querySelector(".project-card");
+          const status = allowedStatuses.includes(project.status) ? project.status : "Unknown status";
+          const priority = allowedPriorities.includes(project.priority) ? project.priority : "Unspecified priority";
+
+          article.querySelector(".status-badge").textContent = `Status: ${status}`;
+          article.querySelector(".status-badge").dataset.status = status.toLowerCase().replace(" ", "-");
+          article.querySelector(".priority-label").textContent = `Priority: ${priority}`;
+          article.querySelector(".priority-label").dataset.priority = priority.toLowerCase();
+          article.querySelector("h3").textContent = project.name;
+          article.querySelector(".summary").textContent = project.summary || "No contributor summary provided.";
+          article.querySelector(".owner").textContent = project.owner;
+          article.querySelector(".recent-activity").textContent = project.recentActivity;
+          return card;
+        });
+
+        grid.replaceChildren(...cards);
+        projectCount.textContent = `${data.projects.length} ${data.projects.length === 1 ? "project" : "projects"}`;
+      }
+
+      fetch("project-data.json")
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`Project data request failed (${response.status}).`);
+          }
+          return response.json();
+        })
+        .then(renderProjects)
+        .catch((error) => {
+          console.error("Unable to load Project Pulse data:", error);
+          showState("Project data could not be loaded. Please refresh and try again.", "error-state");
+        });
+    </script>
+  </body>
+</html>
